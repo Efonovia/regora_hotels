@@ -1,0 +1,46 @@
+.bookingarea {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.room {
+    height: 200px;
+    width: 250px;
+    background-color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* gap: 5px; */
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    gap: 4%;
+}
+
+.actions > div {
+    width: 48%;
+    height: 50px;
+    /* background-color: yellow; */
+}
+
+.available {
+    background: red;
+    cursor: pointer;
+    color: white;
+}
+
+.unavailable {
+    background: gray;
+    cursor: not-allowed;
+}

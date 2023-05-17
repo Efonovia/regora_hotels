@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <a href="../roomspage/?guest_id={{guest.id}}">View rooms</a>
+
+    <!-- !SHOW UPCOMING/ACTIVE RESERVATION -->
+
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">s/n</th>
+            <th scope="col">Room</th>
+            <th scope="col">Room Type</th>
+            <th scope="col">Reservation starts</th>
+            <th scope="col">Reservation ends</th>
+            <th scope="col">Services</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reservation in reservations %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ reservation.room.room_number }}</td>
+              <td>{{ reservation.room.getType }}</td>
+              <td>{{ reservation.begin_date }}</td>
+              <td>{{ reservation.end_date }}</td>
+              <td>
+                {% for service in reservation.services.all %}
+                    <span>{{ service.name }}</span>,
+                {% endfor %}
+            </td>
+              <td><a href="../updatereservation/?room_number={{ reservation.room.room_number}}&guest_id={{guest.id}}&reservation_id={{reservation.pk}}">update</a ></td>
+              <td class="cancel-link" data-reservation-id="{{ reservation.pk }}">cancel</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h1>UPCOMING reservation: {{ upcoming_reservation }}</h1>
+      <h1>active reservation: {{ active_reservation }}</h1>
+</body>
+
+<script>
+    const cancelLinks = document.querySelectorAll('.cancel-link');
+    
+    cancelLinks.forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const reservationId = link.getAttribute('data-reservation-id');
+        
+        if (confirm('Are you sure you want to cancel this reservation?')) {
+          fetch(`/cancelreservation/?reservation_id=${reservationId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+          })
+          .then(response => {
+            if (response.ok) {
+              // Optionally, you can remove the row from the table or perform other actions
+              link.closest('tr').remove();
+            } else {
+              throw new Error('Error: ' + response.status);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        }
+      });
+    });
+  </script>
+
+</html>

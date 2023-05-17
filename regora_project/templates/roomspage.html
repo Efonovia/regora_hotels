@@ -1,0 +1,32 @@
+{% load static %}
+
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rooms area</title>
+    <link rel="stylesheet" href="{% static 'css/booking.css' %}">
+</head>
+<body>
+    {{guest.email}}
+    <a href="../dashboard/?guest_id={{guest.id}}">Back to dashboard</a>
+
+    ALL ROOM RESERVATIONS END AT 6PM OF THE FINAL DAY OF RESERVATION
+
+
+        <div class="bookingarea">
+          {% for room in rooms %}
+          <div class="room">
+            <p class="roomnumber">Room {{ room.room_number }}</p>
+            <p class="roomtype">{{ room.getType }}</p>
+            <p class="availability">{% if room.is_available %}available{% else %}unavailable{% endif %}</p>
+            <div class="actions">
+                <div class="{% if room.is_available %}unavailable{% else %}available{% endif %}">View Reservation Details</div>
+                <a href="../reservation/?room_number={{ room.room_number}}&guest_id={{guest.id}}"><div class="{% if room.is_available %}available{% else %}unavailable{% endif %}">Reserve Room</div></a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      
+      
+</body>

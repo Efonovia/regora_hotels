@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update reservation</title>
+</head>
+<body>
+    <h1></h1>
+    <a href="../dashboard/?guest_id={{guest_id}}">Back to dashboard</a>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">s/n</th>
+            <th scope="col">Reservation starts</th>
+            <th scope="col">Reservation ends</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reservation in reservations %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ reservation.begin_date }}</td>
+              <td>{{ reservation.end_date }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+          {% csrf_token %}
+          <!-- {{ form.as_p }} -->
+          <label for="begin_date">When will you check in to the room</label>
+          <input type="date" value="{{reservation_to_update.begin_date}}" name="begin_date" class="begin_date" required><br><br>
+          <label for="end_date">When do you plan on leaving:</label>
+          <input value="{{reservation_to_update.end_date}}" type="date" name="end_date" class="end_date" required><br><br>
+          {% for service in services %}
+            <label>
+                <input type="checkbox" class="services" name="services" value="{{ service.id }}"> {{ service.name }}
+            </label>
+            <br>
+        {% endfor %}
+          <button class="button">Confirm reservation</button>
+    <h1 class="reservation-title">Reservation for Room{{room.room_number}}({{ room.getType }})</h1>
+    <p class="duration"></p>
+    <p class="rate"></p>
+    <p class="service-cost"></p>
+    <p class="balance "></p>
+    
+</body>
+
+<script>
+     function getCSRFToken() {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + 'csrftoken' + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+
+    function formatDate(dateStr) {
+        const dateObj = new Date(dateStr);
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
+    }
+
+    let durationCost = 0
+    let serviceCost = 0
+    let totalBalance = 0
+    const urlParams = new URLSearchParams(window.location.search);
+    const reservationId = urlParams.get('reservation_id');
+    let csrfToken = getCSRFToken();
+    let servicesList = document.querySelectorAll(".services")
+    let begin_date = document.querySelector('.begin_date')
+    let end_date = document.querySelector('.end_date')
+    let submit = document.querySelector('.button')
+    let duration = document.querySelector('.duration')
+    let reservation_title = document.querySelector('.reservation-title')
+    let rate = document.querySelector('.rate')
+    let balance = document.querySelector('.balance')
+    let reservation_details = JSON.parse('{{ json_reservations|safe }}');
+    let serviceCostHTML = document.querySelector('.service-cost')
+    let serviceOptions = document.querySelectorAll(".services")
+    let services_details = JSON.parse('{{ json_services|safe }}');
+    let initial_user_chosen_services_details = JSON.parse('{{ user_chosen_services|safe }}');
+    console.log(initial_user_chosen_services_details)
+    begin_date.value = formatDate(reservation_details.find(reservation => reservation.pk == reservationId).fields.begin_date)
+    end_date.value = formatDate(reservation_details.find(reservation => reservation.pk == reservationId).fields.end_date)
+
+
+    serviceOptions.forEach((option, i) => option.checked = initial_user_chosen_services_details.find(detail => detail.pk == option.value))
+    console.log(`DATE TO CHANGE: `)
+    console.log(`begindate: ${reservation_details.find(reservation => reservation.pk == reservationId).fields.begin_date}`)
+    console.log(`enddate: ${reservation_details.find(reservation => reservation.pk == reservationId).fields.end_date}`)
+    submit.addEventListener('click', e => {
+        const selectedServices = Array.from(servicesList)
+        .filter(input => input.checked)
+        .map(input => input.value);
+
+        const current_date = new Date()
+        const begin_date_value = new Date(begin_date.value)
+        const end_date_value = new Date(end_date.value)
+
+        console.log(reservation_details.filter(reservation => reservation.pk != reservationId))
+        const hasDateClash = reservation_details.filter(reservation => reservation.pk != reservationId).some(reservation => {
+            const existingStart = new Date(reservation.fields.begin_date);
+            const existingEnd = new Date(reservation.fields.end_date);
+
+            return (
+                (begin_date_value >= existingStart && begin_date_value <= existingEnd) ||
+                (end_date_value >= existingStart && end_date_value <= existingEnd) ||
+                (begin_date_value <= existingStart && end_date_value >= existingEnd)
+            );
+        });
+        
+        if((begin_date_value > current_date && end_date_value > begin_date_value)) {
+            console.log(begin_date.value)
+            console.log(end_date.value)
+            console.log((end_date_value - begin_date_value)/(1000*60*60*24))
+            if(hasDateClash) {
+                alert("There is a clash with an existing reservation")
+            } else {
+                console.log("there is no date clash")
+                fetch(`/processupdatereservation/?room_number={{room.room_number}}&guest_id={{guest_id}}&reservation_id=${reservationId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        begin_date: begin_date.value,
+                        end_date: end_date.value,
+                        services: selectedServices 
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    console.log(data);
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        } else {
+            alert("invalid date set")
+        }
+    })
+
+    serviceOptions.forEach(serviceOption => serviceOption.addEventListener('change', e => {
+        const userSelectedServices = Array.from(servicesList)
+        .filter(input => input.checked)
+        .map(input => input.value);
+        
+        console.log(userSelectedServices)
+        if(userSelectedServices && userSelectedServices.length > 0) {
+            let x = 0
+            userSelectedServices.forEach(selectedService => {
+                let servicePrice = parseInt(services_details.find(service_detail => selectedService == service_detail.pk).fields.price)
+                x += servicePrice
+
+                serviceCostHTML.textContent = `Cost of selected services: $${x}`
+            })
+            serviceCost = x
+        }
+    }))
+
+    begin_date.addEventListener('change', () => {
+        const current_date = new Date()
+        const begin_date_value = new Date(begin_date.value)
+        const end_date_value = new Date(end_date.value)
+        const ppn = parseInt(rate.textContent.split(" ")[1].split("$")[0])
+        const length = ((end_date_value - begin_date_value)/(1000*60*60*24))
+
+        if(begin_date_value > current_date && end_date_value > begin_date_value) {
+            durationCost = ppn*length
+            duration.textContent = "for " + length + " nights"
+            balance.textContent = "Balance: $" + (durationCost+serviceCost)
+        } else {
+            duration.textContent = "invalid date selected. unable to compute"
+            balance.textContent = "invalid date selected. unable to compute"
+        }
+    })
+
+    end_date.addEventListener('change', () => {
+        const current_date = new Date()
+        const begin_date_value = new Date(begin_date.value)
+        const end_date_value = new Date(end_date.value)
+        const ppn = parseInt(rate.textContent.split(" ")[1].split("$")[0])
+        const length = ((end_date_value - begin_date_value)/(1000*60*60*24))
+
+        if(begin_date_value > current_date && end_date_value > begin_date_value) {
+            durationCost = ppn*length
+            duration.textContent = "for " + length + " nights"
+            balance.textContent = "Balance: $" + (durationCost+serviceCost)
+        } else {
+            duration.textContent = "invalid date selected. unable to compute"
+            balance.textContent = "invalid date selected. unable to compute"
+        }
+    })
+
+    
+    switch (reservation_title.textContent.split("(")[1].split(")")[0]) {
+        case "basic":
+            rate.textContent = "at 20$ per night"
+            break;
+        case "premium":
+            rate.textContent = "at 30$ per night"
+            break;
+        case "executive":
+            rate.textContent = "at 50$ per night"
+            break;
+    
+        default:
+            break;
+    }
+
+</script>
+</html>

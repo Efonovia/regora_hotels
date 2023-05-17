@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <h1>Sign Up</h1>
+    <form method="POST" action="/createUser/">
+      {% csrf_token %}
+      <!-- {{ form.as_p }} -->
+      <label for="first_name">First Name:</label>
+      <input placeholder="enter your first name" type="text" name="first_name" required><br><br>
+      <label for="last_name">Last Name:</label>
+      <input placeholder="enter your last name" type="text" name="last_name" required><br><br>
+      <label for="phone_number">Phone Number:</label>
+      <input placeholder="enter your phonenumber" type="text" name="phone_number" required><br><br>
+      <label for="email">Email:</label>
+      <input placeholder="enter your email" type="text" name="email" required><br><br>
+      <label for="password">Password:</label>
+      <input placeholder="enter your password" type="text" name="password" required><br><br>
+      <button type="submit">Sign Up</button>
+    </form>
+
+    {% if form.errors %}
+    {% if form.errors.email %}
+      <script>
+        alert("This email is already registered. Please choose a different email.");
+      </script>
+    {% endif %}
+    {% if form.errors.non_field_errors %}
+      <script>
+        alert("Invalid form data. Please check your input and try again.");
+      </script>
+    {% endif %}
+  {% endif %}
+    
+
+  </body>
+</html>
+

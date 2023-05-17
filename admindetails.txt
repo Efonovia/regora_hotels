@@ -1,0 +1,7 @@
+admin user:
+username: efosa@gmail.com
+password: efosa
+
+normal user:
+username: jim@gmail.com
+password: qwertyuiop
