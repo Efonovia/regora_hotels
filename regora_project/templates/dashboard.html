@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <title>Dashboard</title>
 </head>
 <body>
@@ -42,8 +43,28 @@
         </tbody>
       </table>
 
-      <h1>UPCOMING reservation: {{ upcoming_reservation }}</h1>
-      <h1>active reservation: {{ active_reservation }}</h1>
+      <p>UPCOMING reservation: {{ upcoming_reservation }}</p>
+      <p>active reservation: {{ active_reservation }}</p>
+
+      <div class="phone">
+        <div class="header">
+            YOU
+        </div>
+    
+        <div class="chat-area">
+          {% for message in messages %}
+            {% if message.sender == guest %}
+              <div class="message sender">{{ message.text }}</div>
+            {% else %}
+                <div class="message receiver">{{ message.text }}</div>
+            {% endif %}
+          {% endfor %}
+        </div>
+    
+        <div class="tools">
+            <input class="input-area" type="text"><button class="send">send</button>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -76,6 +97,48 @@
         }
       });
     });
+  </script>
+
+  <script>
+
+    function getCSRFToken() {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + 'csrftoken' + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+
+    let csrfToken = getCSRFToken();
+    let chatArea = document.querySelector('.chat-area')
+    let sendButton = document.querySelector('.send')
+    let inputArea = document.querySelector('.input-area')
+
+    sendButton.addEventListener('click', () => {
+      console.log(243546578697)
+      if(inputArea.value) {
+        fetch(`/sendmessage/?sender={{guest.id}}&receiver=1`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ text: inputArea.value })
+          })
+          .then(response => {
+            if (response.ok) {
+              let newMessage = document.createElement('div')
+              newMessage.className = "message sender"
+              newMessage.textContent = inputArea.value
+              chatArea.append(newMessage)
+              chatArea.scrollTop = chatArea.scrollHeight;
+              inputArea.value = ""
+            } else {
+              throw new Error('Error: ' + response.status);
+            }
+          })
+          .catch(error => {
+            alert('Error:', error);
+          });
+      }
+    })
   </script>
 
 </html>

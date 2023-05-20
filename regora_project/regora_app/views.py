@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import SignupForm
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.core.serializers import serialize
 from django.utils import timezone
 
@@ -107,7 +107,7 @@ def reservation(request):
             reservation['fields']['begin_date'] = reservation['fields']['begin_date'].split('T')[0]
             reservation['fields']['end_date'] = reservation['fields']['end_date'].split('T')[0]
         reservations_json_updated = json.dumps(reservations_data)
-        print(reservations_json_updated)
+        # print(reservations_json_updated)
         return render(request, 'reservation.html', {
                 'room': room, 
                 'guest_id': guest_id, 
@@ -164,6 +164,7 @@ def dashboard(request):
 
     if guest_id:
         guest = Guest.objects.get(id=guest_id)
+        filtered_messages = Message.objects.filter(sender=guest, receiver=Guest.objects.get(id=1)) | Message.objects.filter(sender=Guest.objects.get(id=1), receiver=guest)
         target_reservations = Reservation.objects.filter(guest=guest)
         if target_reservations:
             return render(request, 'dashboard.html', {
@@ -171,6 +172,7 @@ def dashboard(request):
                     'reservations': target_reservations,
                     'upcoming_reservation': upcoming_reservation,
                     'active_reservation': active_reservation,
+                    'messages': filtered_messages.order_by("date_time_sent"),
                 }
             )
 
@@ -204,7 +206,7 @@ def updatereservation(request):
         reservation['fields']['begin_date'] = reservation['fields']['begin_date'].split('T')[0]
         reservation['fields']['end_date'] = reservation['fields']['end_date'].split('T')[0]
     reservations_json_updated = json.dumps(reservations_data)
-    print(reservations_json_updated)
+    # print(reservations_json_updated)
     return render(request, 'updatereservation.html', {
         'reservation_to_update': target_reservation,
         'room': room, 
@@ -250,3 +252,140 @@ def cancel_reservation(request):
         return HttpResponse(status=204)  # Return a success response
     
 
+def adminLogin(request):
+    print(Guest.objects.all())
+    return render(request, "adminlogin.html")
+
+
+def processAdminLogin(request):
+    if request.method == 'POST':
+        username = request.POST.get('email')
+        password = request.POST.get('password')
+
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            # Authentication successful
+            return redirect(f'/admindashboard/?admin_id={user.id}')
+        else:
+            # Authentication failed
+            return render(request, 'adminlogin.html', {'error_message': 'Invalid username or password.'})
+
+
+def adminDashboard(request):
+    admin_id = request.GET.get('admin_id')
+    admin = Guest.objects.get(id=admin_id)
+    filtered_messages = Message.objects.filter(sender=admin, receiver=Guest.objects.get(id=3)) | Message.objects.filter(sender=Guest.objects.get(id=3), receiver=admin)
+    return render(request, "admindashboard.html", {
+            'admin': admin,
+            'guests': Guest.objects.filter(is_staff=False),
+            'reservations': Reservation.objects.all(),
+            'rooms': Room.objects.all(),
+            'messages': filtered_messages.order_by("date_time_sent"),
+            'guest_in_contact_with': Guest.objects.get(id=3),
+        }
+    )
+
+
+def change_receiver(request):
+    admin_id = 1
+    admin = Guest.objects.get(id=admin_id)
+    if request.method == "POST":
+        receiver_id = request.GET.get('receiver_id')
+        receiver = Guest.objects.get(id=receiver_id)
+        filtered_messages = Message.objects.filter(sender=admin, receiver=receiver) | Message.objects.filter(sender=receiver, receiver=admin)
+        print(filtered_messages)
+        return render(request, "admindashboard.html", {
+                'admin': admin,
+                'guests': Guest.objects.filter(is_staff=False),
+                'reservations': Reservation.objects.all(),
+                'rooms': Room.objects.all(),
+                'messages': filtered_messages.order_by("date_time_sent"),
+                'guest_in_contact_with': receiver,
+            }
+        )
+
+def adminCreateGuest(request):
+    form = SignupForm()  # Create an instance of the SignupForm
+    admin_id = request.GET.get('admin_id')
+    if request.method == 'POST':
+        form = SignupForm(request.POST)  # Bind form data to the request POST data
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+
+            if Guest.objects.filter(email=email).exists():
+                form.add_error('email', 'This email is already registered.')
+            else:
+                # Process the valid form data and create the guest object
+                Guest.objects.create(
+                    username=email,
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    email=email,
+                    password=form.cleaned_data['password'],
+                    phone_number=form.cleaned_data['phone_number']
+                )
+
+                # Redirect to the roomspage page with the guest ID as a URL parameter
+                return redirect(f'/admindashboard/?admin_id={admin_id}')
+
+    return render(request, 'admincreateguest.html', {'form': form, 'admin_id': admin_id})
+
+
+def adminUpdateGuest(request):
+    form = SignupForm()  # Create an instance of the SignupForm
+    admin_id = request.GET.get('admin_id')
+    guest_id = request.GET.get('guest_id')
+
+    target_guest = Guest.objects.get(id=guest_id)
+    if request.method == 'POST':
+        form = SignupForm(request.POST)  # Bind form data to the request POST data
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            print(form.cleaned_data)
+
+            if Guest.objects.exclude(id=target_guest.id).filter(email=email).exists():
+                form.add_error('email', 'This email is already registered.')
+            else:
+                # Process the valid form data and update the guest object
+                target_guest.username=email,
+                target_guest.first_name=form.cleaned_data['first_name']
+                target_guest.last_name=form.cleaned_data['last_name']
+                target_guest.email=email
+                target_guest.password=form.cleaned_data['password']
+                target_guest.phone_number=form.cleaned_data['phone_number']
+                target_guest.save()
+
+                # Redirect to the roomspage page with the guest ID as a URL parameter
+                return redirect(f'/admindashboard/?admin_id={admin_id}')
+
+    return render(request, 'adminupdateguest.html', {'form': form, 'admin_id': admin_id, 'guest': target_guest})
+
+def adminDeleteGuest(request):
+    admin_id = request.GET.get('admin_id')
+    guest_id = request.GET.get('guest_id')
+
+    try:
+        guest = Guest.objects.get(id=guest_id)
+        guest.delete()
+        return redirect(f'/admindashboard/?admin_id={admin_id}')
+    except Guest.DoesNotExist:
+        # Handle the case when the guest doesn't exist
+        return HttpResponse("Guest not found")
+
+
+def send_message(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        sender = request.GET.get('sender')
+        receiver = request.GET.get('receiver')
+        text = data.get('text')
+
+        Message.objects.create(
+            sender = Guest.objects.get(id=sender),
+            receiver = Guest.objects.get(id=receiver),
+            text = text
+        )
+        return JsonResponse({'ok': True})
+    return JsonResponse({'error': 'Invalid request'})

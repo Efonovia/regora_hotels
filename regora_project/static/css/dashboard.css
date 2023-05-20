@@ -1,0 +1,74 @@
+.phone {
+    width: 400px;
+    height: 600px;
+    background-color: rgb(225, 159, 159);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
+.header {
+    width: 100%;
+    height: 10%;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-area {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: baseline;
+    align-items: stretch;
+    background-color: rgb(244, 198, 198);
+    overflow-y: scroll;
+    padding-top: 10px;
+    flex-direction: column;
+}
+
+.tools {
+    width: 100%;
+    height: 10%;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.tools input[type="text"] {
+    flex-grow: 0.9;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.tools input[type="text"]:focus {
+    border-color: blue;
+}
+
+.message {
+    max-width: 80%; /* Adjust the max-width as needed */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.sender {
+    background-color: lightgreen; /* Adjust the colors as needed */
+    align-self: flex-end;
+    margin-right: 10px;
+}
+
+.receiver {
+    background-color: lightblue; /* Adjust the colors as needed */
+    align-self: flex-start;
+    margin-left: 10px;
+}

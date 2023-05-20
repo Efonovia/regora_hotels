@@ -1,0 +1,175 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/admindashboard.css' %}">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+    <h1>Guests</h1>
+    <table class="guests_table">
+        <thead>
+          <tr>
+            <th scope="col">s/n</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for guest in guests %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ guest.first_name }}</td>
+              <td>{{ guest.last_name }}</td>
+              <td>{{ guest.email }}</td>
+              <td>{{ guest.phone_number }}</td>
+
+              <td><a href="./adminupdateguest/?admin_id={{admin.id}}&guest_id={{guest.id}}">update</a></td>
+              <td><a href="./admindeleteguest/?admin_id={{admin.id}}&guest_id={{guest.id}}">delete</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <a href="./admincreateguest/?admin_id={{ admin.id }}">create new guest</a>
+
+
+    <h1>Reservations</h1>
+    <table class="reservations-table">
+        <thead>
+          <tr>
+            <th scope="col">s/n</th>
+            <th scope="col">Room</th>
+            <th scope="col">Room Type</th>
+            <th scope="col">Reservation starts</th>
+            <th scope="col">Reservation ends</th>
+            <th scope="col">Services</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reservation in reservations %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ reservation.room.room_number }}</td>
+              <td>{{ reservation.room.getType }}</td>
+              <td>{{ reservation.begin_date }}</td>
+              <td>{{ reservation.end_date }}</td>
+              <td>
+                  <select>
+                      <option value="">Services requested</option>
+                    {% for service in reservation.services.all %}
+                        <option value="{{service.name}}">{{service.name}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+              <td><a href="">update</a ></td>
+              <td><a href="">cancel</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <a href="./admincreatereservation/?admin_id={{ admin.id }}">create new reservation</a>
+
+
+      <div class="phone">
+        <div class="contacts">
+          <h1 class="contacts-header">Guests</h1>
+          <hr>
+          {% for guest in guests %}
+            <div data-guest_id="{{guest.id}}" class="contact">
+              <div class="name">{{guest.first_name}}</div>
+              <div class="email">{{guest.email}}</div>
+            </div>
+            <hr>
+          {% endfor %}
+        </div>
+
+        <div class="messaging-section">
+            <div class="header">{{guest_in_contact_with.first_name}}</div>
+        
+            <div class="chat-area">
+              {% for message in messages %}
+                {% if message.sender.first_name == admin.first_name %}
+                  <div class="message sender">{{ message.text }}</div>
+                {% else %}
+                    <div class="message receiver">{{ message.text }}</div>
+                {% endif %}
+              {% endfor %}
+            </div>
+        
+            <div class="tools">
+                <input class="input-area" type="text"><button class="send">send</button>
+            </div>
+        </div>
+       
+    </div>
+</body>
+
+<script>
+  function getCSRFToken() {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + 'csrftoken' + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+
+    let csrfToken = getCSRFToken();
+    let chatArea = document.querySelector('.chat-area')
+    let sendButton = document.querySelector('.send')
+    let inputArea = document.querySelector('.input-area')
+    let contacts = document.querySelectorAll('.contact')
+    let phone = document.querySelector('.phone')
+
+    let receiver_id
+    contacts.forEach(contact => contact.addEventListener('click', () => {
+      receiver_id = contact.getAttribute('data-guest_id')
+      console.log(contact.getAttribute('data-guest_id'))
+      fetch(`/changereceiver/?receiver_id=${receiver_id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+        }).then(() => {
+
+        })
+    }))
+
+
+
+    sendButton.addEventListener('click', () => {
+      console.log(243546578697)
+      if(inputArea.value) {
+        fetch(`/sendmessage/?receiver_id=${receiver_id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ text: inputArea.value })
+          })
+          .then(response => {
+            if (response.ok) {
+              let newMessage = document.createElement('div')
+              newMessage.className = "message sender"
+              newMessage.textContent = inputArea.value
+              chatArea.append(newMessage)
+              chatArea.scrollTop = chatArea.scrollHeight;
+              inputArea.value = ""
+            } else {
+              throw new Error('Error: ' + response.status);
+            }
+          })
+          .catch(error => {
+            alert('Error:', error);
+          });
+      }
+    })
+</script>
+
+</html>

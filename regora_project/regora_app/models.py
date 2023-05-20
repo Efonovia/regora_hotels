@@ -94,3 +94,13 @@ class Reservation(models.Model):
         cost = self.getCost() if self.room is not None else None
         return f"Room{room_number} by {guest_name} for {duration} days at {cost} dollars"
         
+
+class Message(models.Model):
+    sender = models.ForeignKey(Guest, related_name='sent_messages', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(Guest, related_name='received_messages', on_delete=models.CASCADE)
+    text = models.CharField(max_length=300, null=False)
+    date_time_sent = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender.first_name} sent {self.text[:15]}... to {self.receiver.first_name}"
+

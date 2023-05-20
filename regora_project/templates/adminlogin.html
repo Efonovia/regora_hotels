@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Login</title>
+  </head>
+  <body>
+    <h1>Administration Login</h1>
+    <form method="POST" action="/processadminlogin/">
+      {% csrf_token %}
+      <label for="email">Email:</label>
+      <input placeholder="Enter your email" type="text" name="email" required><br><br>
+      <label for="password">Password:</label>
+      <input placeholder="Enter your password" type="text" name="password" required><br><br>
+      <button type="submit">Log in</button>
+    </form>
+<p>{{error_message}}</p>
+    {% if form.errors %}
+      {% if form.errors.non_field_errors %}
+        <script>
+          alert("{{ form.errors.non_field_errors|join:' ' }}");
+        </script>
+      {% endif %}
+      {% if form.errors.email or form.errors.password %}
+        <script>
+          alert("Invalid email or password.");
+        </script>
+      {% endif %}
+    {% endif %}
+  </body>
+</html>

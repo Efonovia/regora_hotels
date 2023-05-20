@@ -16,6 +16,14 @@ urlpatterns=[
     path('processupdatereservation/', views.process_update_reservation, name="processupdatereservation"),
     path('processReservation/', views.processReservation),
     path('cancelreservation/', views.cancel_reservation, name='cancel_reservation'),
+    path('adminlogin/', views.adminLogin, name="adminlogin"),
+    path('processadminlogin/', views.processAdminLogin, name="process_admin_login"),
+    path('admindashboard/', views.adminDashboard, name="admindashboard"),
+    path('admindashboard/admincreateguest/', views.adminCreateGuest, name="admincreateguest"),
+    path('admindashboard/adminupdateguest/', views.adminUpdateGuest, name="adminupdateguest"),
+    path('admindashboard/admindeleteguest/', views.adminDeleteGuest, name="admindeleteguest"),
+    path('sendmessage/', views.send_message),
+    path('changereceiver/', views.change_receiver)
 ]
 
 
