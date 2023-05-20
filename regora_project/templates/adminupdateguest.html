@@ -1,27 +1,37 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
-      <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin create guest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/adminupdatereservation.css' %}">
+    <title>Admin update guest</title>
   </head>
   <body>
-    <h1>Admin create guest</h1>
-    <form method="POST" action="/admindashboard/adminupdateguest/?admin_id={{admin_id}}&guest_id={{guest.id}}">
-      {% csrf_token %}
-      <!-- {{ form.as_p }} -->
-      <label for="first_name">First Name:</label>
-      <input placeholder="enter first name" value="{{guest.first_name}}" type="text" name="first_name" required><br><br>
-      <label for="last_name">Last Name:</label>
-      <input placeholder="enter last name" value="{{guest.last_name}}" type="text" name="last_name" required><br><br>
-      <label for="phone_number">Phone Number:</label>
-      <input placeholder="enter phonenumber" value="{{guest.phone_number}}" type="text" name="phone_number" required><br><br>
-      <label for="email">Email:</label>
-      <input placeholder="enter email" value="{{guest.email}}" type="text" name="email" required><br><br>
-      <label for="password">Password:</label>
-      <input placeholder="enter password" value="{{guest.password}}" type="text" name="password" required><br><br>
-      <button type="submit">Create guest</button>
-    </form>
+    <a href="/admindashboard/?admin_id=1" class="logo">
+      <img src="{% static 'images/dashboard_icon.png' %}" height="40" width="40">
+      <h2 class="logo-text">Back to dashboard</h2>
+    </a>
+    <div class="wrapper">
+      <h1>Admin update guest</h1>
+      <form method="POST" action="/admindashboard/adminupdateguest/?admin_id={{admin_id}}&guest_id={{guest.id}}">
+        {% csrf_token %}
+        <!-- {{ form.as_p }} -->
+        <label for="first_name">First Name:</label>
+        <input placeholder="enter first name" value="{{guest.first_name}}" type="text" name="first_name" required><br><br>
+        <label for="last_name">Last Name:</label>
+        <input placeholder="enter last name" value="{{guest.last_name}}" type="text" name="last_name" required><br><br>
+        <label for="phone_number">Phone Number:</label>
+        <input placeholder="enter phonenumber" value="{{guest.phone_number}}" type="text" name="phone_number" required><br><br>
+        <label for="email">Email:</label>
+        <input placeholder="enter email" value="{{guest.email}}" type="text" name="email" required><br><br>
+        <label for="password">Password:</label>
+        <input placeholder="enter password" value="{{guest.password}}" type="text" name="password" required><br><br>
+        <input value="save" type="submit">
+      </form>
+    </div>
 
     {% if form.errors %}
     {% if form.errors.email %}

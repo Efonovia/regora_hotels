@@ -1,0 +1,114 @@
+<style>
+/* background */
+body {
+  background: rgb(0, 0, 0);
+  margin-top: 7%;
+  font-family: poppins;
+}
+
+/* container */
+.wrapper {
+  width: 420px;
+  margin: auto;
+  border: 1px solid #ffcc00;
+  border-radius: 7px;
+  padding: 0 25px 30px 20px;
+}
+
+h1 {
+  padding: 30px 0 0 0;
+  font: 25px Oswald;
+  color: #ffcc00;
+  text-transform: uppercase;
+  text-shadow: #ffcc00 0px 1px 5px;
+  margin: 0;
+}
+
+p {
+  font: 13px Open Sans;
+  color: #ffcc00;
+  text-shadow: #ffcc00 0px 1px 5px;
+  margin-bottom: 30px;
+}
+
+input[type="text"],
+input[type="email"] {
+  width: 98%;
+  padding: 15px 0 15px 8px;
+  border-radius: 5px;
+  box-shadow: inset 4px 6px 10px -4px rgba(0, 0, 0, 0.3),
+    0 1px 1px -1px rgba(255, 255, 255, 0.3);
+  border: 2px solid #ffcc00;
+  margin-bottom: 10px;
+  color: rgb(0, 0, 0);
+  text-shadow: rgb(0, 0, 0) 0px 1px 5px;
+  font-size: 15px;
+  border-left: 5px solid #ffcc00;
+}
+
+input[type="submit"] {
+  width: 101.5%;
+  padding: 15px;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  text-transform: uppercase;
+  text-shadow: #000 0px 1px 5px;
+  border: 1px solid #000;
+  -webkit-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+  font-family: Open Sans;
+  font-weight: bolder;
+}
+
+input:focus {
+  box-shadow: inset 4px 6px 10px -4px rgba(0, 0, 0, 0.7),
+    0 1px 1px -1px rgba(255, 255, 255, 0.3);
+}
+
+input[type="submit"]:hover {
+  opacity: 1;
+  cursor: pointer;
+  /*background-color: #FFCC00;*/
+  background: linear-gradient(
+    to bottom,
+    #fce300 0%,
+    #f9ec70 50%,
+    #f9e316 51%,
+    #f1da36 99%
+  );
+}
+
+.name-help,
+.email-help {
+  padding: 0px;
+  margin: 20px 0px 15px 0px;
+}
+
+/* author */
+.nemesis {
+  position: fixed;
+  right: 3%;
+  bottom: 0px;
+}
+
+</style>
+<!-- <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> -->
+
+<div class="wrapper">
+  <h1>Register For An Account</h1>
+  <p>To sign-up for a free basic account please provide us with some basic information using the contact form below. Please use valid credentials.</p>
+  <form class="form" method="post" action="yourpage.html">
+    <input type="text" name="name" placeholder="Name">
+    <div>
+      <p class="name-help">Please enter your first and last name.</p>
+    </div>
+    <input type="email" name="email" placeholder="Email">
+    <div>
+      <p class="email-help">Please enter your current email adress.</p>
+    </div>
+    <input type="submit" name="submit" value="Register">
+  </form>
+</div>
+<p class="nemesis">nemesis</p>

@@ -1,5 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils import timezone
 
 class GuestManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
@@ -86,6 +89,35 @@ class Reservation(models.Model):
 
         return (self.end_date - self.begin_date) * prices[self.room.getType()]
 
+    def get_status(self):
+        current_date = timezone.now().date()
+
+        if current_date < self.begin_date:
+            return "Forthcoming"
+        elif self.begin_date <= current_date <= self.end_date:
+            return "Active"
+        else:
+            return "Expired"
+        
+
+    def clean(self):
+        # Check for conflicting reservations with the same room
+        conflicting_reservations = Reservation.objects.filter(
+            room=self.room,
+            begin_date__lte=self.end_date,
+            end_date__gte=self.begin_date
+        ).exclude(pk=self.pk)
+
+        if conflicting_reservations.exists():
+            raise ValidationError(_('There is a conflicting reservation for this room.'))
+
+
+        # Additional validation logic if needed
+        # ...
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Run full validation before saving
+        super().save(*args, **kwargs)
 
     def __str__(self):
         room_number = self.room.room_number if self.room is not None else None

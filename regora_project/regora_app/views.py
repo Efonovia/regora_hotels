@@ -2,7 +2,7 @@ import json
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .models import *
-from .forms import SignupForm
+from .forms import ReservationForm, SignupForm
 from django.contrib.auth import login, authenticate
 from django.core.serializers import serialize
 from django.utils import timezone
@@ -275,14 +275,12 @@ def processAdminLogin(request):
 def adminDashboard(request):
     admin_id = request.GET.get('admin_id')
     admin = Guest.objects.get(id=admin_id)
-    filtered_messages = Message.objects.filter(sender=admin, receiver=Guest.objects.get(id=3)) | Message.objects.filter(sender=Guest.objects.get(id=3), receiver=admin)
     return render(request, "admindashboard.html", {
             'admin': admin,
             'guests': Guest.objects.filter(is_staff=False),
             'reservations': Reservation.objects.all(),
             'rooms': Room.objects.all(),
-            'messages': filtered_messages.order_by("date_time_sent"),
-            'guest_in_contact_with': Guest.objects.get(id=3),
+            'messages': Message.objects.all().order_by("-date_time_sent"),
         }
     )
 
@@ -357,11 +355,50 @@ def adminDeleteGuest(request):
         return HttpResponse("Guest not found")
 
 
+def adminCreateReservation(request):
+    if request.method == 'POST':
+        print(request.POST)
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            services = form.cleaned_data['services']
+            print(services)
+            airportservice = Service.objects.get(id=1)
+            if airportservice in services:
+                pickup_time = form.cleaned_data['pickup_time']
+                dropoff_time = form.cleaned_data['dropoff_time']
+                reservation.pickup_time = pickup_time
+                reservation.dropoff_time = dropoff_time
+            else:
+                reservation.pickup_time = None
+                reservation.dropoff_time = None
+
+            reservation.save()
+            form.save_m2m()
+            return redirect('/admindashboard/?admin_id=1')
+    else:
+        form = ReservationForm()
+
+    return render(request, 'admincreatereservation.html', {'form': form})
+
+def adminDeleteReservation(request):
+    admin_id = request.GET.get('admin_id')
+    reservation_id = request.GET.get('reservation_id')
+
+    try:
+        reservation = Reservation.objects.get(id=reservation_id)
+        reservation.delete()
+        return redirect(f'/admindashboard/?admin_id={admin_id}')
+    except Reservation.DoesNotExist:
+        # Handle the case when the reservation doesn't exist
+        return HttpResponse("Reservation not found")
+
 def send_message(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         sender = request.GET.get('sender')
         receiver = request.GET.get('receiver')
+        print(sender, receiver, "666666666666666666666666666666666666666666666666666666666666")
         text = data.get('text')
 
         Message.objects.create(

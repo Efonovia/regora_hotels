@@ -47,8 +47,10 @@
             <th scope="col">s/n</th>
             <th scope="col">Room</th>
             <th scope="col">Room Type</th>
+            <th scope="col">Reserved by</th>
             <th scope="col">Reservation starts</th>
             <th scope="col">Reservation ends</th>
+            <th scope="col">Reservation status</th>
             <th scope="col">Services</th>
           </tr>
         </thead>
@@ -58,8 +60,10 @@
               <td>{{ forloop.counter }}</td>
               <td>{{ reservation.room.room_number }}</td>
               <td>{{ reservation.room.getType }}</td>
+              <td>{{ reservation.guest.first_name }}</td>
               <td>{{ reservation.begin_date }}</td>
               <td>{{ reservation.end_date }}</td>
+              <td>{{ reservation.get_status }}</td>
               <td>
                   <select>
                       <option value="">Services requested</option>
@@ -68,8 +72,7 @@
                     {% endfor %}
                 </select>
             </td>
-              <td><a href="">update</a ></td>
-              <td><a href="">cancel</a></td>
+              <td><a href="./admindeletereservation/?admin_id={{ admin.id }}&reservation_id={{reservation.id}}">cancel</a></td>
             </tr>
           {% endfor %}
         </tbody>
@@ -79,19 +82,33 @@
 
 
       <div class="phone">
-            <div class="header">{{guest_in_contact_with.first_name}}</div>
+            <div class="header">Messenger</div>
         
             <div class="chat-area">
               {% for message in messages %}
-                {% if message.sender.first_name == admin.first_name %}
-                  <div class="message sender">{{ message.text }}</div>
-                {% else %}
-                    <div class="message receiver">{{ message.text }}</div>
-                {% endif %}
+                <div class="message">
+                  {% if message.sender == admin %}
+                    <div class="you sender">From: YOU(admin)</div>
+                  {% else %}
+                    <div class="sender">From: {{message.sender.first_name}}</div>
+                  {% endif %}
+                  
+                  {% if message.receiver == admin %}
+                    <div class="you receiver">To: YOU(admin)</div>
+                  {% else %}
+                    <div class="receiver">To: {{message.receiver.first_name}}</div>
+                  {% endif %}
+                  <h3>{{message.text}}</h3>
+                </div>
               {% endfor %}
             </div>
         
             <div class="tools">
+              <select class="contact-list">
+                {% for guest in guests %}
+                    <option value="{{guest.id}}">{{guest.first_name}}</option>
+                {% endfor %}
+              </select> 
                 <input class="input-area" type="text"><button class="send">send</button>
             </div>
        
@@ -109,27 +126,36 @@
     let sendButton = document.querySelector('.send')
     let inputArea = document.querySelector('.input-area')
     let phone = document.querySelector('.phone')
+    let contacts = document.querySelector('.contact-list')
 
-
-
-
+    contacts.addEventListener('click', () => {
+      console.log(contacts.value)
+    })
+    
+    
     sendButton.addEventListener('click', () => {
+      console.log(contacts.value)
       console.log(243546578697)
       if(inputArea.value) {
-        fetch(`/sendmessage/?receiver_id=${receiver_id}`, {
+        fetch(`/sendmessage/?sender=1&receiver=${contacts.value}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'X-CSRFToken': csrfToken
             },
-            body: JSON.stringify({ text: inputArea.value })
+            body: JSON.stringify({ text: inputArea.value})
           })
           .then(response => {
             if (response.ok) {
-              let newMessage = document.createElement('div')
-              newMessage.className = "message sender"
-              newMessage.textContent = inputArea.value
-              chatArea.append(newMessage)
+              let newMessage = `
+              <div class="message">
+                    <div class="you sender">From: YOU(admin)</div>
+                    <div class="receiver">To: ${Array.from(contacts.children).find(el => el.value == contacts.value).textContent}</div>
+                  
+                  <h3>${inputArea.value}</h3>
+                </div>
+              `
+              chatArea.innerHTML+=newMessage
               chatArea.scrollTop = chatArea.scrollHeight;
               inputArea.value = ""
             } else {

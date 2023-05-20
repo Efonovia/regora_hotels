@@ -20,6 +20,7 @@
             <th scope="col">Room Type</th>
             <th scope="col">Reservation starts</th>
             <th scope="col">Reservation ends</th>
+            <th scope="col">Reservation status</th>
             <th scope="col">Services</th>
           </tr>
         </thead>
@@ -31,6 +32,7 @@
               <td>{{ reservation.room.getType }}</td>
               <td>{{ reservation.begin_date }}</td>
               <td>{{ reservation.end_date }}</td>
+              <td>{{ reservation.get_status }}</td>
               <td>
                 {% for service in reservation.services.all %}
                     <span>{{ service.name }}</span>,

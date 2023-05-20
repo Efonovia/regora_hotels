@@ -1,0 +1,38 @@
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admincreatereservation.css' %}">
+
+    <title>Admin create reservation</title>
+  </head>
+  <body>
+    <a href="/admindashboard/?admin_id=1" class="logo">
+      <img src="{% static 'images/dashboard_icon.png' %}" height="40" width="40">
+      <h2 class="logo-text">Back to dashboard</h2>
+    </a>
+
+    <div style="top: 10px; left: 420px; padding-bottom: 10px;" class="wrapper">
+      <h1>Create a new reservation</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="create reservation">
+      </form>
+    </div>
+
+    {% if form.errors %}
+    {% for field, errors in form.errors.items %}
+    {% for error in errors %}
+    <script>
+                alert("{{ error }}");
+                </script>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+        

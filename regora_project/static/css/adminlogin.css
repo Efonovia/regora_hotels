@@ -1,0 +1,105 @@
+:root {
+  --reddish: #B70404;
+  --pinkish: #DB005B;
+  --orangish: #F79327;
+  --yellowish: #FFE569;
+}
+/* background */
+body {
+    background: rgb(0, 0, 0);
+    margin-top: 7%;
+    font-family: Rubik;
+  }
+
+  
+  /* container */
+  .wrapper {
+    width: 420px;
+    margin: auto;
+    border: 1px solid var(--orangish);
+    border-radius: 7px;
+    padding: 0 25px 30px 20px;
+    position: absolute;
+    left: 400px;
+  }
+  
+  h1 {
+    padding: 30px 0 0 0;
+    font: 25px;
+    color: var(--orangish);
+    text-transform: uppercase;
+    margin: 0;
+  }
+  
+  p {
+    font: 13px;
+    color: var(--orangish);
+    text-shadow: var(--orangish) 0px 1px 5px;
+    margin-bottom: 30px;
+  }
+
+  .logo {
+    text-decoration: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+.logo-text {
+    color: white;
+}
+  
+  input[type="text"],
+  input[type="email"] {
+    width: 98%;
+    padding: 15px 0 15px 8px;
+    border-radius: 5px;
+    font-family: Rubik;
+    border: 2px solid var(--orangish);
+    margin-bottom: 10px;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+    border-left: 5px solid var(--orangish);
+  }
+  
+  input[type="submit"] {
+    width: 101.5%;
+    padding: 15px;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    text-transform: uppercase;
+    border: 1px solid #000;
+    -webkit-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+    font-family: Rubik;
+    font-weight: bolder;
+  }
+
+  
+  input[type="submit"]:hover {
+    opacity: 1;
+    cursor: pointer;
+    /*background-color: var(--orangish);*/
+    background: var(--orangish)
+  }
+  
+  .name-help,
+  .email-help {
+    padding: 0px;
+    margin: 20px 0px 15px 0px;
+  }
+  
+  /* author */
+  .nemesis {
+    position: fixed;
+    right: 3%;
+    bottom: 0px;
+  }
+  

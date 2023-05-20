@@ -1,25 +1,45 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
-      <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <title>Sign Up</title>
   </head>
   <body>
-    <h1>Sign Up</h1>
-    <form method="POST" action="/createUser/">
+    <a href="/" class="logo">
+      <img src="{% static 'images/home_icon.png' %}" height="40" width="40">
+      <h1 class="logo-text">REGORA HOTELS</h1>
+    </a>
+    <form class="signup" method="POST" action="/createUser/">
       {% csrf_token %}
+      <h1>Create account</h1>
       <!-- {{ form.as_p }} -->
-      <label for="first_name">First Name:</label>
-      <input placeholder="enter your first name" type="text" name="first_name" required><br><br>
-      <label for="last_name">Last Name:</label>
-      <input placeholder="enter your last name" type="text" name="last_name" required><br><br>
-      <label for="phone_number">Phone Number:</label>
-      <input placeholder="enter your phonenumber" type="text" name="phone_number" required><br><br>
-      <label for="email">Email:</label>
-      <input placeholder="enter your email" type="text" name="email" required><br><br>
-      <label for="password">Password:</label>
-      <input placeholder="enter your password" type="text" name="password" required><br><br>
+      <div class="signup__field">
+        <input class="signup__input" id="username" type="text" name="first_name" required>
+        <label class="signup__label" for="first_name">First Name:</label>
+      </div>
+
+      <div class="signup__field">
+        <input class="signup__input" id="email" type="text" name="last_name" required>
+        <label class="signup__label" for="last_name">Last Name:</label>
+      </div>
+      
+      <div class="signup__field">
+        <input class="signup__input" id="password" type="text" name="phone_number" required>
+        <label class="signup__label" for="phone_number">Phone Number:</label>
+      </div>
+
+      <div class="signup__field">
+        <input class="signup__input" type="text" name="email" required>
+        <label class="signup__label" for="email">Email:</label>
+      </div>
+
+      <div class="signup__field">
+        <input class="signup__input" type="text" name="password" required>
+        <label class="signup__label" for="password">Password:</label>
+      </div>
+
       <button type="submit">Sign Up</button>
     </form>
 

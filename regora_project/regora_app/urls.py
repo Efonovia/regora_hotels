@@ -22,6 +22,8 @@ urlpatterns=[
     path('admindashboard/admincreateguest/', views.adminCreateGuest, name="admincreateguest"),
     path('admindashboard/adminupdateguest/', views.adminUpdateGuest, name="adminupdateguest"),
     path('admindashboard/admindeleteguest/', views.adminDeleteGuest, name="admindeleteguest"),
+    path('admindashboard/admincreatereservation/', views.adminCreateReservation, name="admincreatereservation"),
+    path('admindashboard/admindeletereservation/', views.adminDeleteReservation, name="admindeletereservation"),
     path('sendmessage/', views.send_message),
 ]
 

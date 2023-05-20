@@ -1,20 +1,30 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/adminlogin.css' %}">
     <title>Administration Login</title>
   </head>
   <body>
-    <h1>Administration Login</h1>
-    <form method="POST" action="/processadminlogin/">
-      {% csrf_token %}
-      <label for="email">Email:</label>
-      <input placeholder="Enter your email" type="text" name="email" required><br><br>
-      <label for="password">Password:</label>
-      <input placeholder="Enter your password" type="text" name="password" required><br><br>
-      <button type="submit">Log in</button>
-    </form>
+    <a href="/" class="logo">
+      <img src="{% static 'images/home_icon.png' %}" height="40" width="40">
+      <h2 class="logo-text">REGORA HOTELS</h2>
+    </a>
+    <div class="wrapper">
+      <h1>Admin Login</h1>
+      <form method="POST" action="/processadminlogin/">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input placeholder="Enter your email" type="text" name="email" required><br><br>
+        <label for="password">Password:</label>
+        <input placeholder="Enter your password" type="text" name="password" required><br><br>
+        <input type="submit" value="Log in">
+      </form>
+    </div>
 <p>{{error_message}}</p>
     {% if form.errors %}
       {% if form.errors.non_field_errors %}
