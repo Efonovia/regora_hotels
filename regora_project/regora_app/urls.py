@@ -23,7 +23,6 @@ urlpatterns=[
     path('admindashboard/adminupdateguest/', views.adminUpdateGuest, name="adminupdateguest"),
     path('admindashboard/admindeleteguest/', views.adminDeleteGuest, name="admindeleteguest"),
     path('sendmessage/', views.send_message),
-    path('changereceiver/', views.change_receiver)
 ]
 
 

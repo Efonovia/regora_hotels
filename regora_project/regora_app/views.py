@@ -287,24 +287,6 @@ def adminDashboard(request):
     )
 
 
-def change_receiver(request):
-    admin_id = 1
-    admin = Guest.objects.get(id=admin_id)
-    if request.method == "POST":
-        receiver_id = request.GET.get('receiver_id')
-        receiver = Guest.objects.get(id=receiver_id)
-        filtered_messages = Message.objects.filter(sender=admin, receiver=receiver) | Message.objects.filter(sender=receiver, receiver=admin)
-        print(filtered_messages)
-        return render(request, "admindashboard.html", {
-                'admin': admin,
-                'guests': Guest.objects.filter(is_staff=False),
-                'reservations': Reservation.objects.all(),
-                'rooms': Room.objects.all(),
-                'messages': filtered_messages.order_by("date_time_sent"),
-                'guest_in_contact_with': receiver,
-            }
-        )
-
 def adminCreateGuest(request):
     form = SignupForm()  # Create an instance of the SignupForm
     admin_id = request.GET.get('admin_id')

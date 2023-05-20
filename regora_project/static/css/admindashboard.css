@@ -5,23 +5,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* flex-direction: row; */
+    flex-direction: column;
     position: absolute;
     top: 50px;
     right: 50px;
 }
 
-.contacts {
-    width: 30%;
-    height: 100%;
-    background-color: blue;
-    overflow-y: scroll;
-}
-
-.messaging-section {
-    width: 70%;
-    height: 100%;
-    background-color: yellow;
+body {
+    background-color: black;
 }
 
 .header {
@@ -86,20 +77,3 @@
     margin-left: 10px;
 }
 
-.contacts-header {
-    text-align: center;
-}
-
-.contact {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-}
-
-.name {
-    font-size: 32px;
-    font-weight: 700;
-}

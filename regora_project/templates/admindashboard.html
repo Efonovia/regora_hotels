@@ -79,19 +79,6 @@
 
 
       <div class="phone">
-        <div class="contacts">
-          <h1 class="contacts-header">Guests</h1>
-          <hr>
-          {% for guest in guests %}
-            <div data-guest_id="{{guest.id}}" class="contact">
-              <div class="name">{{guest.first_name}}</div>
-              <div class="email">{{guest.email}}</div>
-            </div>
-            <hr>
-          {% endfor %}
-        </div>
-
-        <div class="messaging-section">
             <div class="header">{{guest_in_contact_with.first_name}}</div>
         
             <div class="chat-area">
@@ -107,7 +94,6 @@
             <div class="tools">
                 <input class="input-area" type="text"><button class="send">send</button>
             </div>
-        </div>
        
     </div>
 </body>
@@ -122,23 +108,8 @@
     let chatArea = document.querySelector('.chat-area')
     let sendButton = document.querySelector('.send')
     let inputArea = document.querySelector('.input-area')
-    let contacts = document.querySelectorAll('.contact')
     let phone = document.querySelector('.phone')
 
-    let receiver_id
-    contacts.forEach(contact => contact.addEventListener('click', () => {
-      receiver_id = contact.getAttribute('data-guest_id')
-      console.log(contact.getAttribute('data-guest_id'))
-      fetch(`/changereceiver/?receiver_id=${receiver_id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-          },
-        }).then(() => {
-
-        })
-    }))
 
 
 
