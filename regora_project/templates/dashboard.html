@@ -4,17 +4,96 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <title>Dashboard</title>
+    <title>Your dashboard</title>
 </head>
 <body>
-    <a href="../roomspage/?guest_id={{guest.id}}">View rooms</a>
+  <a style="display: flex; margin-left: -1000px; font-size: 24px; text-decoration: none; flex-direction: row; justify-content: center;align-items: center;" href="../roomspage/?guest_id={{guest.id}}"> <img width="60" height="60" src="{% static 'images/room_icon.png' %}" alt=""> <h2>View rooms</h2> </a>
+  <a href="../" class="logo">
+    <h2 class="logout">Logout</h2>
+  </a>  
 
-    <!-- !SHOW UPCOMING/ACTIVE RESERVATION -->
+  {% if suggest_renewal %}
+    <div class="renew">
+      <h3>Would you like to renew your reservation?</h3>
+      <span><label for="renewal-date">Extension date:</label><input required class="extension-date" type="date" name="renewal-date" id=""></span>
+      <div class="buttons">
+        <div style="background-color: green;" class="confirm">Confirm renewal</div>
+        <div style="background-color: red;" class="no-renewal">I don't want to renew</div>
+      </div>
+    </div>
+  {% endif %}
 
-    <table class="table">
-        <thead>
-          <tr>
+  <div class="wrapper">
+        <h1 style=" background-color: white; color: #DB005B; text-align: center;">{{guest.first_name}} {{guest.last_name}}</h1>
+      {% if active_reservation %}
+        <div class="calculations">
+          <h1 style="color: rgb(255, 255, 255);">Your active reservation</h>
+          <h2 class="reservation-title">Reservation for Room{{active_reservation.room.room_number}}({{ active_reservation.room.getType }})</h2>
+          <p class="begin_date">You'll be checked in on {{active_reservation.begin_date}} </p>
+          <p class="end_date">You'll be checking out on {{active_reservation.end_date}}</p>
+          <select style="width: 300px; height: 30px;">
+            <option value="">Services requested</option>
+            {% for service in active_reservation.services.all %}
+                <option value="{{service.name}}">{{service.name}}</option>
+            {% endfor %}
+        </select>
+          <p class="balance">Your total balance is: ${{ active_reservation.getCost }}</p>
+        </div>
+      {% elif upcoming_reservation %}
+        <div class="calculations">
+          <h1>Your upcoming reservation</h1>
+          <h2 class="reservation-title">Reservation for Room{{upcoming_reservation.room.room_number}}({{ upcoming_reservation.room.getType }})</h2>
+          <p class="begin_date">You'll be checking in on {{upcoming_reservation.begin_date}} </p>
+          <p class="end_date">You'll be checking out on {{upcoming_reservation.end_date}}</p>
+          <select style="width: 300px; height: 30px;">
+            <option value="">Services requested</option>
+            {% for service in upcoming_reservation.services.all %}
+xt                 <option value="{{service.name}}">{{service.name}}</option>
+            {% endfor %}
+        </select>
+        <p class="balance">Your total balance is: ${{ upcoming_reservation.getCost }}</p>
+        </div>
+
+      {% else %}
+        <h1>You haven't made any reservation yet</h1>
+      {% endif %}
+    </div>
+    
+
+
+
+  <img id="burger" width="40" height="40" src="{% static 'images/message_icon.png' %}" alt="">
+
+  <div id="nav">
+    <div class="phone">
+      <div class="header">
+          REGORA HOTELS
+      </div>
+      <div class="chat-area">
+        {% for message in messages %}
+          {% if message.sender == guest %}
+            <div class="message sender">{{ message.text }}</div>
+          {% else %}
+              <div class="message receiver">{{ message.text }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+  
+      <div class="tools">
+          <input class="input-area" type="text"><button class="send">Send</button>
+      </div>
+  </div>
+  </div>
+
+
+    <h1 style="text-align: center; margin-top: 30px; margin-bottom: 10px;">All your resevations</h1>
+    <table style="margin: auto;" class="table">
+        <thead id="thead">
+          <tr class="thead">
             <th scope="col">s/n</th>
             <th scope="col">Room</th>
             <th scope="col">Room Type</th>
@@ -26,7 +105,7 @@
         </thead>
         <tbody>
           {% for reservation in reservations %}
-            <tr>
+            <tr class="tr">
               <td>{{ forloop.counter }}</td>
               <td>{{ reservation.room.room_number }}</td>
               <td>{{ reservation.room.getType }}</td>
@@ -34,39 +113,23 @@
               <td>{{ reservation.end_date }}</td>
               <td>{{ reservation.get_status }}</td>
               <td>
-                {% for service in reservation.services.all %}
-                    <span>{{ service.name }}</span>,
-                {% endfor %}
+                <select style="width: 100%; height: 30px;">
+                    <option value="">Services requested</option>
+                    {% for service in reservation.services.all %}
+                        <option value="{{service.name}}">{{service.name}}</option>
+                    {% endfor %}
+                </select>
             </td>
-              <td><a href="../updatereservation/?room_number={{ reservation.room.room_number}}&guest_id={{guest.id}}&reservation_id={{reservation.pk}}">update</a ></td>
-              <td class="cancel-link" data-reservation-id="{{ reservation.pk }}">cancel</td>
+              <td style="background-color: green;" class="update"><a style="text-decoration: none;" href="../updatereservation/?room_number={{ reservation.room.room_number}}&guest_id={{guest.id}}&reservation_id={{reservation.pk}}">update</a ></td>
+              <td style="background-color: white; cursor: pointer;" class="cancel-link" data-reservation-id="{{ reservation.pk }}">cancel</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
 
-      <p>UPCOMING reservation: {{ upcoming_reservation }}</p>
-      <p>active reservation: {{ active_reservation }}</p>
 
-      <div class="phone">
-        <div class="header">
-            YOU
-        </div>
-    
-        <div class="chat-area">
-          {% for message in messages %}
-            {% if message.sender == guest %}
-              <div class="message sender">{{ message.text }}</div>
-            {% else %}
-                <div class="message receiver">{{ message.text }}</div>
-            {% endif %}
-          {% endfor %}
-        </div>
-    
-        <div class="tools">
-            <input class="input-area" type="text"><button class="send">send</button>
-        </div>
-    </div>
+
+      
 </body>
 
 <script>
@@ -143,4 +206,66 @@
     })
   </script>
 
+
+<script>
+  const nav = document.getElementById('nav');
+const burger = document.getElementById('burger');
+const overlay = document.getElementById('overlay');
+
+burger.addEventListener('click', () => {
+    burger.classList.toggle('active');
+    nav.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
+</script>
+
+<script>
+  let renewDiv = document.querySelector('.renew')
+  let renewCancel = document.querySelector('.no-renewal')
+  let confirmRenewal = document.querySelector('.confirm')
+
+  function extendReservation() {
+    const extensionDate = document.querySelector('.extension-date').value;
+    console.log(extensionDate)
+    // Make a POST request to the backend
+    fetch(`/extend-reservation/{{active_reservation.id}}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token for Django
+      },
+      body: JSON.stringify({ extension_date: extensionDate }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          // Handle error response
+          alert(data.error);
+        } else {
+          // Handle success response
+          alert(data.success);
+          renewDiv.style.none
+          // Optionally, update the UI or redirect the user
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle error case
+      });
+
+    // Prevent the default form submission
+    return false;
+  }
+
+  function getCookie(name) {
+    const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
+    return cookieValue ? cookieValue.pop() : '';
+  }
+
+  confirmRenewal.addEventListener('click', extendReservation)
+
+  renewCancel.addEventListener('click', () => {
+    renewDiv.style.display = "none"
+  })
+</script>
 </html>

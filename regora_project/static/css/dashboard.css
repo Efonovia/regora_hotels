@@ -1,20 +1,76 @@
+:root {
+    --reddish: #B70404;
+    --pinkish: #DB005B;
+    --orangish: #F79327;
+    --yellowish: #FFE569;
+  }
+
+
+  *,
+  html {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+body {
+    background-color: var(--pinkish);
+    font-family: Rubik;
+}
+
+.renew {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 100px;
+  right: 50px;
+  background-color: white;
+  border-radius: 15px;
+  padding: 15px;
+  gap: 25px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 15px;
+  width: 100%;
+}
+
+.buttons > div {
+  padding: 10px 15px;
+  cursor: pointer;
+  color: white;
+  border-radius: 15px;
+}
+
+.logout {
+  position: absolute;
+  top: 30px;
+  right: 200px;
+}
+
 .phone {
     width: 400px;
     height: 600px;
-    background-color: rgb(225, 159, 159);
+    background-color: rgb(235, 235, 235);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     position: absolute;
     top: 50px;
-    right: 50px;
+    right: 70px;
 }
 
 .header {
     width: 100%;
     height: 10%;
-    background-color: red;
+    background-color: var(--pinkish);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,7 +82,7 @@
     display: flex;
     justify-content: baseline;
     align-items: stretch;
-    background-color: rgb(244, 198, 198);
+    background-color: rgb(255, 255, 255);
     overflow-y: scroll;
     padding-top: 10px;
     flex-direction: column;
@@ -35,7 +91,7 @@
 .tools {
     width: 100%;
     height: 10%;
-    background-color: red;
+    background-color: var(--pinkish);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,7 +118,7 @@
 }
 
 .sender {
-    background-color: lightgreen; /* Adjust the colors as needed */
+    background-color: rgb(106, 229, 106); /* Adjust the colors as needed */
     align-self: flex-end;
     margin-right: 10px;
 }
@@ -72,3 +128,164 @@
     align-self: flex-start;
     margin-left: 10px;
 }
+
+
+.send {
+    background-color: green;
+    cursor: pointer;
+    color: white;
+    height: 25px;
+    border: none;
+    text-decoration: none;
+    width: 60px;
+}
+
+caption,
+th,
+td {
+	padding: 1rem;
+	text-align: left;
+	line-height: 1.5;
+	color: var(--pinkish);
+    text-align: center;
+}
+
+thead {
+  background-color: black;
+}
+
+.tr {
+  background-color: white;
+  color: black;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.calculations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+p {
+    color: white;
+}
+select {
+    width: 200px;
+}
+
+@media only screen and (max-width: 650px) {
+	th {
+		display: none;
+	}
+	td {
+		display: grid;
+		grid-template-columns: 15ch auto;
+	}
+
+	td::before {
+		content: attr(data-cell) ": ";
+		font-weight: 700;
+		text-transform: capitalize;
+	}
+}
+  
+
+/* SIDE DRAWER */
+
+#burger {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    /* background: #17141d; */
+    /* padding: 1rem; */
+    z-index: 1000;
+    cursor: pointer;
+    transition: 0.3s linear;
+    /* box-shadow: 2px 2px 5px #17141d; */
+  }
+  
+  #burger:hover {
+    background-color: goldenrod;
+  }
+  
+  .line {
+    width: 22px;
+    margin-bottom: 5px;
+    height: 2px;
+    background-color: white;
+  }
+  
+  .line:last-child {
+    margin-bottom: 0;
+  }
+  
+  #nav {
+    height: 100vh;
+    width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #17141d;
+    color: white;
+    position: fixed;
+    top: 0;
+    right: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s linear;
+    margin-left: 200px;
+  }
+  
+  #nav.active {
+    transform: translateX(0);
+  }
+  
+  ul {
+    list-style: none;
+    text-align: center;
+  }
+  
+  li {
+    text-transform: uppercase;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    line-height: 1.6;
+  }
+  
+  .text {
+    width: 80%;
+    text-align: center;
+    line-height: 1.8;
+    letter-spacing: 3px;
+  }
+  
+  h1 {
+    margin-bottom: 3rem;
+  }
+  
+  a {
+    color: #fafafa;
+    transition: 0.3s linear;
+  }
+  
+  i {
+    margin: 2rem;
+  }
+  
+  a:hover {
+    outline: none;
+  }
+  
+  @media screen and (max-width: 600px) {
+    #burger {
+      top: 90%;
+      right: 12%;
+    }
+  }

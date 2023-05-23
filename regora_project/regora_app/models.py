@@ -80,14 +80,15 @@ class Reservation(models.Model):
     dropoff_time = models.TimeField(default="nothing", max_length=20, null=True, blank=True)
         
     def getCost(self):
-
         prices = {
             "basic": 20,
             "premium": 30,
             "executive": 50
         }
-
-        return (self.end_date - self.begin_date) * prices[self.room.getType()]
+        
+        room_cost = (self.end_date - self.begin_date).days * prices[self.room.getType()]
+        service_cost = sum(service.price for service in self.services.all())
+        return room_cost + service_cost
 
     def get_status(self):
         current_date = timezone.now().date()

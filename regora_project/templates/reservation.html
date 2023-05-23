@@ -1,16 +1,24 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
-      <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/reservation.css' %}">
     <title>Reserve room</title>
   </head>
   <body>
-
-    <a href="../dashboard/?guest_id={{guest_id}}">Back to dashboard</a> <br>
+    <a href="../dashboard/?guest_id={{guest_id}}" class="logo">
+        <img src="{% static 'images/user_dashboard_icon.png' %}" height="40" width="40">
+        <h2 class="logo-text">Back to dashboard</h2>
+      </a>
     {% if reservations %}
+
+    <h2>Reservations for this room</h2>
     <table class="table">
-        <thead>
+        <thead id="thead">
           <tr>
             <th scope="col">s/n</th>
             <th scope="col">Reservation starts</th>
@@ -20,7 +28,7 @@
         </thead>
         <tbody>
           {% for reservation in reservations %}
-            <tr>
+            <tr class="tr">
               <td>{{ forloop.counter }}</td>
               <td>{{ reservation.begin_date }}</td>
               <td>{{ reservation.end_date }}</td>
@@ -32,29 +40,39 @@
       {% endif %}
         {% csrf_token %}
         <!-- {{ form.as_p }} -->
-        <label for="begin_date">When will you check in to the room</label>
-        <input type="date" name="begin_date" class="begin_date" required><br><br>
-        <label for="end_date">When do you plan on leaving:</label>
-        <input type="date" name="end_date" class="end_date" required><br><br>
-        {% for service in services %}
-            <label>
-                <input type="checkbox" class="services" name="services" value="{{ service.id }}"> {{ service.name }}
-            </label>
-            <br>
-        {% endfor %}
-
-        <div class="transport">
-            <label for="pickup-time">When should we pick you up</label>
-            <input type="time" name="pickup-time" class="pickup-time" required><br><br>
-            <label for="drop-off-time">When should we drop you off:</label>
-            <input type="time" name="drop-off-time" class="drop-off-time" required><br><br>
+        <div class="wrapper">
+            <h1 style="margin-top: -40px; margin-bottom: 20px;">Reserve a room</h1>
+            <form>
+                <label for="begin_date">When will you check in to the room</label>
+                <input type="date" name="begin_date" class="begin_date" required><br><br>
+                <label for="end_date">When do you plan on leaving:</label>
+                <input type="date" name="end_date" class="end_date" required><br><br>
+                {% for service in services %}
+                    <label>
+                        <input type="checkbox" class="services" name="services" value="{{ service.id }}"> {{ service.name }}
+                    </label>
+                    <br>
+                {% endfor %}
+                <br>
+                <div class="transport">
+                    <label for="pickup-time">When should we pick you up</label>
+                    <input type="time" name="pickup-time" class="pickup-time" required><br><br>
+                    <label for="drop-off-time">When should we drop you off:</label>
+                    <input type="time" name="drop-off-time" class="drop-off-time" required><br><br>
+                </div>
+                <input value="Confirm reservation" type="button" class="button">
+            </form>
         </div>
-        <button class="button">Confirm reservation</button>
-    <h1 class="reservation-title">Reservation for Room{{room.room_number}}({{ room.getType }})</h1>
-    <p class="duration"></p>
-    <p class="rate"></p>
-    <p class="service-cost"></p>
-    <p class="balance "></p>
+
+       
+
+    <div class="calculations">
+        <h1 class="reservation-title">Reservation for Room{{room.room_number}}({{ room.getType }})</h1>
+        <p class="duration"></p>
+        <p class="rate"></p>
+        <p class="service-cost"></p>
+        <p class="balance"></p>
+    </div>
     
   </body>
 
@@ -81,7 +99,8 @@
     let balance = document.querySelector('.balance')
     let serviceCostHTML = document.querySelector('.service-cost')
     let reservation_details = JSON.parse('{{ json_reservations|safe }}' || null);
-    let serviceOptions = document.querySelectorAll(".services")
+    let serviceOptions = servicesList
+    console.log(serviceOptions)
     let services_details = JSON.parse('{{ json_services|safe }}');
 
     transport.style.display = "none"
@@ -173,19 +192,23 @@
             transport.style.display = "none"
         }
         
-        if(userSelectedServices && userSelectedServices.length > 0) {
+        console.log(userSelectedServices)
+        if(userSelectedServices.length >= 0) {
             let x = 0
             userSelectedServices.forEach(selectedService => {
                 let servicePrice = parseInt(services_details.find(service_detail => selectedService == service_detail.pk).fields.price)
                 x += servicePrice
 
-                serviceCostHTML.textContent = `Cost of selected services: $${x}`
             })
+            serviceCostHTML.textContent = `Cost of selected services: $${x}`
+            balance.textContent = "Balance: $" + (durationCost+x)
             serviceCost = x
+
         }
     }))
 
-
+    
+    console.log(serviceCost)
     begin_date.addEventListener('change', () => {
         const current_date = new Date()
         const begin_date_value = new Date(begin_date.value)

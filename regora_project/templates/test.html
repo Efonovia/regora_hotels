@@ -1,114 +1,142 @@
 <style>
-/* background */
-body {
-  background: rgb(0, 0, 0);
-  margin-top: 7%;
-  font-family: poppins;
+ *,
+html {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* container */
-.wrapper {
-  width: 420px;
-  margin: auto;
-  border: 1px solid #ffcc00;
-  border-radius: 7px;
-  padding: 0 25px 30px 20px;
+
+#burger {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #17141d;
+  padding: 1rem;
+  z-index: 1000;
+  cursor: pointer;
+  transition: 0.3s linear;
+  box-shadow: 2px 2px 5px #17141d;
+}
+
+#burger:hover {
+  background-color: goldenrod;
+}
+
+.line {
+  width: 22px;
+  margin-bottom: 5px;
+  height: 2px;
+  background-color: white;
+}
+
+.line:last-child {
+  margin-bottom: 0;
+}
+
+#nav {
+  height: 100vh;
+  width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #17141d;
+  color: white;
+  position: fixed;
+  right: 0;
+  transform: translateX(100%);
+  transition: transform 0.3s linear;
+  margin-left: 200px;
+}
+
+#nav.active {
+  transform: translateX(0);
+}
+
+ul {
+  list-style: none;
+  text-align: center;
+}
+
+li {
+  text-transform: uppercase;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  line-height: 1.6;
+}
+
+.text {
+  width: 80%;
+  text-align: center;
+  line-height: 1.8;
+  letter-spacing: 3px;
 }
 
 h1 {
-  padding: 30px 0 0 0;
-  font: 25px Oswald;
-  color: #ffcc00;
-  text-transform: uppercase;
-  text-shadow: #ffcc00 0px 1px 5px;
-  margin: 0;
+  margin-bottom: 3rem;
 }
 
-p {
-  font: 13px Open Sans;
-  color: #ffcc00;
-  text-shadow: #ffcc00 0px 1px 5px;
-  margin-bottom: 30px;
+a {
+  color: #fafafa;
+  transition: 0.3s linear;
 }
 
-input[type="text"],
-input[type="email"] {
-  width: 98%;
-  padding: 15px 0 15px 8px;
-  border-radius: 5px;
-  box-shadow: inset 4px 6px 10px -4px rgba(0, 0, 0, 0.3),
-    0 1px 1px -1px rgba(255, 255, 255, 0.3);
-  border: 2px solid #ffcc00;
-  margin-bottom: 10px;
-  color: rgb(0, 0, 0);
-  text-shadow: rgb(0, 0, 0) 0px 1px 5px;
-  font-size: 15px;
-  border-left: 5px solid #ffcc00;
+i {
+  margin: 2rem;
 }
 
-input[type="submit"] {
-  width: 101.5%;
-  padding: 15px;
-  border-radius: 5px;
-  color: rgb(0, 0, 0);
-  text-transform: uppercase;
-  text-shadow: #000 0px 1px 5px;
-  border: 1px solid #000;
-  -webkit-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
-  -moz-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
-  box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
-  font-family: Open Sans;
-  font-weight: bolder;
+a:hover {
+  color: goldenrod;
+  outline: none;
 }
 
-input:focus {
-  box-shadow: inset 4px 6px 10px -4px rgba(0, 0, 0, 0.7),
-    0 1px 1px -1px rgba(255, 255, 255, 0.3);
-}
-
-input[type="submit"]:hover {
-  opacity: 1;
-  cursor: pointer;
-  /*background-color: #FFCC00;*/
-  background: linear-gradient(
-    to bottom,
-    #fce300 0%,
-    #f9ec70 50%,
-    #f9e316 51%,
-    #f1da36 99%
-  );
-}
-
-.name-help,
-.email-help {
-  padding: 0px;
-  margin: 20px 0px 15px 0px;
-}
-
-/* author */
-.nemesis {
-  position: fixed;
-  right: 3%;
-  bottom: 0px;
+@media screen and (max-width: 600px) {
+  #burger {
+    top: 90%;
+    right: 12%;
+  }
 }
 
 </style>
-<!-- <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> -->
 
-<div class="wrapper">
-  <h1>Register For An Account</h1>
-  <p>To sign-up for a free basic account please provide us with some basic information using the contact form below. Please use valid credentials.</p>
-  <form class="form" method="post" action="yourpage.html">
-    <input type="text" name="name" placeholder="Name">
-    <div>
-      <p class="name-help">Please enter your first and last name.</p>
-    </div>
-    <input type="email" name="email" placeholder="Email">
-    <div>
-      <p class="email-help">Please enter your current email adress.</p>
-    </div>
-    <input type="submit" name="submit" value="Register">
-  </form>
-</div>
-<p class="nemesis">nemesis</p>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+        <div id="burger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <div id="nav">
+            
+        </div>
+
+
+        <input type="datetime-local" name="" id="c">
+</body>
+
+</html>
+
+
+<script>
+  let c = document.querySelector('#c')
+  c.addEventListener('click', () => console.log(c.value))
+  const nav = document.getElementById('nav');
+const burger = document.getElementById('burger');
+const overlay = document.getElementById('overlay');
+
+burger.addEventListener('click', () => {
+    burger.classList.toggle('active');
+    nav.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
+</script>

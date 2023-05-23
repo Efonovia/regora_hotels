@@ -1,51 +1,68 @@
-<!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/reservation.css' %}">
     <title>Update reservation</title>
 </head>
 <body>
-    <h1></h1>
-    <a href="../dashboard/?guest_id={{guest_id}}">Back to dashboard</a>
+    <a href="../dashboard/?guest_id={{guest_id}}" class="logo">
+        <img src="{% static 'images/user_dashboard_icon.png' %}" height="40" width="40">
+        <h2 class="logo-text">Back to dashboard</h2>
+      </a>
     <table class="table">
-        <thead>
+        <thead id="thead">
           <tr>
             <th scope="col">s/n</th>
             <th scope="col">Reservation starts</th>
             <th scope="col">Reservation ends</th>
+            <th scope="col">Reservation status</th>
           </tr>
         </thead>
         <tbody>
           {% for reservation in reservations %}
-            <tr>
+            <tr class="tr">
               <td>{{ forloop.counter }}</td>
               <td>{{ reservation.begin_date }}</td>
               <td>{{ reservation.end_date }}</td>
+              <td>{{ reservation.get_status }}</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
           {% csrf_token %}
           <!-- {{ form.as_p }} -->
-          <label for="begin_date">When will you check in to the room</label>
-          <input type="date" value="{{reservation_to_update.begin_date}}" name="begin_date" class="begin_date" required><br><br>
-          <label for="end_date">When do you plan on leaving:</label>
-          <input value="{{reservation_to_update.end_date}}" type="date" name="end_date" class="end_date" required><br><br>
-          {% for service in services %}
-            <label>
-                <input type="checkbox" class="services" name="services" value="{{ service.id }}"> {{ service.name }}
-            </label>
-            <br>
-        {% endfor %}
-          <button class="button">Confirm reservation</button>
-    <h1 class="reservation-title">Reservation for Room{{room.room_number}}({{ room.getType }})</h1>
-    <p class="duration"></p>
-    <p class="rate"></p>
-    <p class="service-cost"></p>
-    <p class="balance "></p>
+          <div class="wrapper">
+            <h1 style="margin-top: -40px; margin-bottom: 20px;">Edit your reservation</h1>
+              <form>
+                  <label for="begin_date">When will you check in to the room</label>
+                  <input type="date" value="{{reservation_to_update.begin_date}}" name="begin_date" class="begin_date" required><br><br>
+                  <label for="end_date">When do you plan on leaving:</label>
+                  <input value="{{reservation_to_update.end_date}}" type="date" name="end_date" class="end_date" required><br><br>
+                  {% for service in services %}
+                    <label>
+                        <input type="checkbox" class="services" name="services" value="{{ service.id }}"> {{ service.name }}
+                    </label>
+                    <br>
+                          {% endfor %}
+                          
+                          <input type="button" value="Save" class="button">
+              </form>
+          </div>
     
+          <div class="calculations">
+            <h1 class="reservation-title">Reservation for Room{{room.room_number}}({{ room.getType }})</h1>
+                          <p class="duration"></p>
+                          <p class="rate"></p>
+                          <p class="service-cost"></p>
+                          <p class="balance "></p>
+          </div>
 </body>
 
 <script>

@@ -1,20 +1,21 @@
+from datetime import datetime, time, timedelta
 import json
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import *
 from .forms import ReservationForm, SignupForm
 from django.contrib.auth import login, authenticate
 from django.core.serializers import serialize
 from django.utils import timezone
 
+
 def home(request):
     return render(request, "home.html")
+
 
 def signup(request):
     return render(request, "signup.html")
 
-# def loginView(request):
-#     return render(request, "login.html")
 
 def createUser(request):
     form = SignupForm()  # Create an instance of the SignupForm
@@ -44,7 +45,6 @@ def createUser(request):
     return render(request, 'signup.html', {'form': form})
 
 
-
 def loginUser(request):
     if request.method == 'POST':
         username = request.POST.get('email')
@@ -58,7 +58,7 @@ def loginUser(request):
             return render(request, 'login.html', {'error_message': 'Invalid username or password.'})
 
         print(guest.password)
-        if guest.password == password:
+        if guest.password == password and not guest.is_staff:
             # Log the user in
             login(request, guest)
             return redirect(f'/dashboard/?guest_id={guest.id}')
@@ -138,6 +138,10 @@ def processReservation(request):
         updated_room.is_available = False
         updated_room.save()
 
+        print(begin_date, end_date, "000000000000000000000000000000000000000")
+        if not(pickup_time and dropoff_time):
+            pickup_time = None
+            dropoff_time = None
         new_reservation = Reservation.objects.create(
             guest = Guest.objects.get(id=guest_id),
             room = updated_room,
@@ -156,15 +160,36 @@ def processReservation(request):
     return JsonResponse({'error': 'Invalid request'})
 
 
+def is_six_hours_before_six_pm(end_date):
+    current_time = datetime.now()
+    target_time = datetime.combine(end_date, datetime.min.time()) + timedelta(hours=18)
+    time_difference = target_time - current_time
+    if time_difference.total_seconds() < (6 * 60 * 60):
+        return True
+    else:
+        return False
+
+
 def dashboard(request):
     guest_id = request.GET.get('guest_id')
     current_date = timezone.now().date()
-    upcoming_reservation = Reservation.objects.filter(begin_date__gte=current_date).latest('begin_date')
-    active_reservation = Reservation.objects.filter(begin_date__lte=current_date, end_date__gte=current_date).first()
+    try:
+        upcoming_reservation = Reservation.objects.filter(begin_date__gte=current_date, guest_id=guest_id).latest('begin_date')
+    except:
+        upcoming_reservation = None
+
+    try:
+        active_reservation = Reservation.objects.filter(begin_date__lte=current_date, end_date__gte=current_date, guest_id=guest_id).first()
+        suggest_renewal = is_six_hours_before_six_pm(active_reservation.end_date)
+    except:
+        active_reservation = None
+        suggest_renewal = False
 
     if guest_id:
+        # print(guest_id, "0000000000000000000000000000000000000000000")
         guest = Guest.objects.get(id=guest_id)
         filtered_messages = Message.objects.filter(sender=guest, receiver=Guest.objects.get(id=1)) | Message.objects.filter(sender=Guest.objects.get(id=1), receiver=guest)
+        # print(filtered_messages)
         target_reservations = Reservation.objects.filter(guest=guest)
         if target_reservations:
             return render(request, 'dashboard.html', {
@@ -173,10 +198,18 @@ def dashboard(request):
                     'upcoming_reservation': upcoming_reservation,
                     'active_reservation': active_reservation,
                     'messages': filtered_messages.order_by("date_time_sent"),
+                    'suggest_renewal': suggest_renewal
                 }
             )
 
-        return render(request, 'dashboard.html', {'guest': guest})
+        return render(request, 'dashboard.html', {
+                    'guest': guest, 
+                    'upcoming_reservation': upcoming_reservation,
+                    'active_reservation': active_reservation,
+                    'messages': filtered_messages.order_by("date_time_sent"),
+                    'suggest_renewal': suggest_renewal
+                }
+            )
     else:
         guest = None
         return redirect(f'/loginUser')
@@ -218,6 +251,7 @@ def updatereservation(request):
         'user_chosen_services': processed_user_chosen_services,
     })
 
+
 def process_update_reservation(request):
     reservation_id = request.GET.get('reservation_id')
     print(reservation_id, "0000000000000000000000000000000000000000000000000000000")
@@ -248,6 +282,8 @@ def process_update_reservation(request):
 def cancel_reservation(request):
     if request.method == 'POST':
         reservation_id = request.GET.get('reservation_id')
+        reservation = Reservation.objects.get(id=reservation_id)
+        # reservation.room.is_available = True
         Reservation.objects.filter(id=reservation_id).delete()
         return HttpResponse(status=204)  # Return a success response
     
@@ -342,6 +378,7 @@ def adminUpdateGuest(request):
 
     return render(request, 'adminupdateguest.html', {'form': form, 'admin_id': admin_id, 'guest': target_guest})
 
+
 def adminDeleteGuest(request):
     admin_id = request.GET.get('admin_id')
     guest_id = request.GET.get('guest_id')
@@ -373,6 +410,7 @@ def adminCreateReservation(request):
                 reservation.pickup_time = None
                 reservation.dropoff_time = None
 
+            print(reservation.begin_date, reservation.end_date, "0000000000000000000000000000000000000000000000000")
             reservation.save()
             form.save_m2m()
             return redirect('/admindashboard/?admin_id=1')
@@ -381,17 +419,20 @@ def adminCreateReservation(request):
 
     return render(request, 'admincreatereservation.html', {'form': form})
 
+
 def adminDeleteReservation(request):
     admin_id = request.GET.get('admin_id')
     reservation_id = request.GET.get('reservation_id')
 
     try:
         reservation = Reservation.objects.get(id=reservation_id)
+        # reservation.room.is_available = True
         reservation.delete()
         return redirect(f'/admindashboard/?admin_id={admin_id}')
     except Reservation.DoesNotExist:
         # Handle the case when the reservation doesn't exist
         return HttpResponse("Reservation not found")
+
 
 def send_message(request):
     if request.method == 'POST':
@@ -408,3 +449,42 @@ def send_message(request):
         )
         return JsonResponse({'ok': True})
     return JsonResponse({'error': 'Invalid request'})
+
+
+def extend_reservation(request, reservation_id):
+    # Retrieve the existing reservation object
+    try:
+        reservation = Reservation.objects.get(id=reservation_id)
+    except Reservation.DoesNotExist:
+        return JsonResponse({'error': 'Invalid reservation ID'})
+
+    if request.method == 'POST':
+        # Get the extension date from the request data
+        data = json.loads(request.body)
+        print(data)
+        extension_date = data.get('extension_date')
+        extension_date = datetime.strptime(extension_date, '%Y-%m-%d').date()
+        print(extension_date)
+
+        # Check if the extension date is before the current end date
+        if extension_date <= reservation.end_date:
+            return JsonResponse({'error': 'Extension date must be after the current end date'})
+
+        # Check if there are any conflicting reservations for the room
+        conflicting_reservations = Reservation.objects.filter(
+            room=reservation.room,
+            begin_date__lte=extension_date,
+            end_date__gte=extension_date
+        ).exclude(id=reservation_id)
+
+        if conflicting_reservations.exists():
+            return JsonResponse({'error': "Unfortunately, You can't renew your reservation for this room as it clashes with another reservation. You can try reserving another room instead"})
+
+        # Update the reservation's end date to the new extension date
+        reservation.end_date = extension_date
+        reservation.save()
+
+        return JsonResponse({'success': 'Reservation successfully extended'})
+
+    return JsonResponse({'error': 'Invalid request method'})
+

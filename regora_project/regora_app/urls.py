@@ -18,6 +18,7 @@ urlpatterns=[
     path('cancelreservation/', views.cancel_reservation, name='cancel_reservation'),
     path('adminlogin/', views.adminLogin, name="adminlogin"),
     path('processadminlogin/', views.processAdminLogin, name="process_admin_login"),
+    path('extend-reservation/<int:reservation_id>/', views.extend_reservation, name="extend_reservation"),
     path('admindashboard/', views.adminDashboard, name="admindashboard"),
     path('admindashboard/admincreateguest/', views.adminCreateGuest, name="admincreateguest"),
     path('admindashboard/adminupdateguest/', views.adminUpdateGuest, name="adminupdateguest"),

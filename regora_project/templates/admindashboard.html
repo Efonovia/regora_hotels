@@ -5,115 +5,125 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/admindashboard.css' %}">
     <title>Admin Dashboard</title>
 </head>
 <body>
 
-    <h1>Guests</h1>
-    <table class="guests_table">
-        <thead>
-          <tr>
-            <th scope="col">s/n</th>
-            <th scope="col">First Name</th>
-            <th scope="col">Last Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Phone number</th>
-          </tr>
-        </thead>
-        <tbody>
+  <img id="burger" width="40" height="40" src="{% static 'images/message_icon.png' %}" alt="">
+  <a href="../" class="logo">
+    <h2 class="logout">Logout</h2>
+  </a> 
+  <div id="nav">
+    <div class="phone">
+      <div class="header">Messenger</div>
+  
+      <div class="chat-area">
+        {% for message in messages %}
+          <div class="message">
+            {% if message.sender == admin %}
+              <div class="you sender">From: YOU(admin)</div>
+            {% else %}
+              <div class="sender">From: {{message.sender.first_name}}</div>
+            {% endif %}
+            
+            {% if message.receiver == admin %}
+              <div class="you receiver">To: YOU(admin)</div>
+            {% else %}
+              <div class="receiver">To: {{message.receiver.first_name}}</div>
+            {% endif %}
+            <h3>{{message.text}}</h3>
+          </div>
+        {% endfor %}
+      </div>
+  
+      <div class="tools">
+        <select class="contact-list">
           {% for guest in guests %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ guest.first_name }}</td>
-              <td>{{ guest.last_name }}</td>
-              <td>{{ guest.email }}</td>
-              <td>{{ guest.phone_number }}</td>
-
-              <td><a href="./adminupdateguest/?admin_id={{admin.id}}&guest_id={{guest.id}}">update</a></td>
-              <td><a href="./admindeleteguest/?admin_id={{admin.id}}&guest_id={{guest.id}}">delete</a></td>
-            </tr>
+              <option value="{{guest.id}}">{{guest.first_name}}</option>
           {% endfor %}
-        </tbody>
-      </table>
-
-      <a href="./admincreateguest/?admin_id={{ admin.id }}">create new guest</a>
-
-
-    <h1>Reservations</h1>
-    <table class="reservations-table">
-        <thead>
-          <tr>
-            <th scope="col">s/n</th>
-            <th scope="col">Room</th>
-            <th scope="col">Room Type</th>
-            <th scope="col">Reserved by</th>
-            <th scope="col">Reservation starts</th>
-            <th scope="col">Reservation ends</th>
-            <th scope="col">Reservation status</th>
-            <th scope="col">Services</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for reservation in reservations %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ reservation.room.room_number }}</td>
-              <td>{{ reservation.room.getType }}</td>
-              <td>{{ reservation.guest.first_name }}</td>
-              <td>{{ reservation.begin_date }}</td>
-              <td>{{ reservation.end_date }}</td>
-              <td>{{ reservation.get_status }}</td>
-              <td>
-                  <select>
-                      <option value="">Services requested</option>
-                    {% for service in reservation.services.all %}
-                        <option value="{{service.name}}">{{service.name}}</option>
-                    {% endfor %}
-                </select>
-            </td>
-              <td><a href="./admindeletereservation/?admin_id={{ admin.id }}&reservation_id={{reservation.id}}">cancel</a></td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <a href="./admincreatereservation/?admin_id={{ admin.id }}">create new reservation</a>
-
-
-      <div class="phone">
-            <div class="header">Messenger</div>
-        
-            <div class="chat-area">
-              {% for message in messages %}
-                <div class="message">
-                  {% if message.sender == admin %}
-                    <div class="you sender">From: YOU(admin)</div>
-                  {% else %}
-                    <div class="sender">From: {{message.sender.first_name}}</div>
-                  {% endif %}
-                  
-                  {% if message.receiver == admin %}
-                    <div class="you receiver">To: YOU(admin)</div>
-                  {% else %}
-                    <div class="receiver">To: {{message.receiver.first_name}}</div>
-                  {% endif %}
-                  <h3>{{message.text}}</h3>
-                </div>
-              {% endfor %}
-            </div>
-        
-            <div class="tools">
-              <select class="contact-list">
-                {% for guest in guests %}
-                    <option value="{{guest.id}}">{{guest.first_name}}</option>
-                {% endfor %}
-              </select> 
-                <input class="input-area" type="text"><button class="send">send</button>
-            </div>
-       
+        </select> 
+          <input class="input-area" type="text"><button class="send">Send</button>
+      </div>
+ 
     </div>
+  </div>
+
+    <div class="wrapper">
+      <h1 style="margin-bottom: 10px;">Guests</h1>
+      <table class="guests_table">
+          <thead>
+            <tr>
+              <th scope="col">s/n</th>
+              <th scope="col">First Name</th>
+              <th scope="col">Last Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone number</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for guest in guests %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ guest.first_name }}</td>
+                <td>{{ guest.last_name }}</td>
+                <td>{{ guest.email }}</td>
+                <td>{{ guest.phone_number }}</td>
+                <td style="background-color: green;"><a style="text-decoration: none;" href="./adminupdateguest/?admin_id={{admin.id}}&guest_id={{guest.id}}">update</a></td>
+                <td style="background-color: red; cursor: pointer;"><a style="text-decoration: none;" href="./admindeleteguest/?admin_id={{admin.id}}&guest_id={{guest.id}}">delete</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a style="margin-top: 10px; padding: 10px 3px; text-decoration: none; background-color: white; color: #17141d; margin-bottom: 50px;" href="./admincreateguest/?admin_id={{ admin.id }}">create new guest</a>
+      <h1  style="margin-bottom: 10px;">Reservations</h1>
+      <table class="reservations-table">
+          <thead>
+            <tr>
+              <th scope="col">s/n</th>
+              <th scope="col">Room number</th>
+              <th scope="col">Room Type</th>
+              <th scope="col">Reserved by</th>
+              <th scope="col">Reservation starts</th>
+              <th scope="col">Reservation ends</th>
+              <th scope="col">Reservation status</th>
+              <th scope="col">Services</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for reservation in reservations %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ reservation.room.room_number }}</td>
+                <td>{{ reservation.room.getType }}</td>
+                <td>{{ reservation.guest.first_name }}</td>
+                <td>{{ reservation.begin_date }}</td>
+                <td>{{ reservation.end_date }}</td>
+                <td>{{ reservation.get_status }}</td>
+                <td>
+                    <select style="width: 100%; height: 30px;">
+                        <option value="">Services requested</option>
+                      {% for service in reservation.services.all %}
+                          <option value="{{service.name}}">{{service.name}}</option>
+                      {% endfor %}
+                  </select>
+              </td>
+                <td style="background-color: red;"><a style="text-decoration: none;" href="./admindeletereservation/?admin_id={{ admin.id }}&reservation_id={{reservation.id}}">cancel</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <a style="margin-top: 10px; padding: 10px 3px; text-decoration: none; background-color: white; color: #17141d; margin-bottom: 50px;" href="./admincreatereservation/?admin_id={{ admin.id }}">create new reservation</a>
+    </div>
+
+
+      
 </body>
+
+
 
 <script>
   function getCSRFToken() {
@@ -167,6 +177,18 @@
           });
       }
     })
+</script>
+
+<script>
+  const nav = document.getElementById('nav');
+const burger = document.getElementById('burger');
+const overlay = document.getElementById('overlay');
+
+burger.addEventListener('click', () => {
+    burger.classList.toggle('active');
+    nav.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
 </script>
 
 </html>

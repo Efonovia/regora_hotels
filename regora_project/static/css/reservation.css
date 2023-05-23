@@ -1,0 +1,150 @@
+:root {
+    --reddish: #B70404;
+    --pinkish: #DB005B;
+    --orangish: #F79327;
+    --yellowish: #FFE569;
+  }
+  /* background */
+  body {
+      /* background: rgb(0, 0, 0); */
+      margin-top: 7%;
+      font-family: Rubik;
+    }
+
+    caption,
+th,
+td {
+	padding: 1rem;
+	text-align: left;
+	line-height: 1.5;
+	color: white;
+}
+
+#thead {
+  background-color: var(--orangish);
+}
+
+.tr {
+  background-color: black;
+}
+
+
+
+@media only screen and (max-width: 650px) {
+	th {
+		display: none;
+	}
+	td {
+		display: grid;
+		grid-template-columns: 15ch auto;
+	}
+
+	td::before {
+		content: attr(data-cell) ": ";
+		font-weight: 700;
+		text-transform: capitalize;
+	}
+}
+  
+    .table {
+        position: absolute;
+        height: 100px;
+        overflow-y: scroll;
+    }
+    
+    /* container */
+    .wrapper {
+      width: 480px;
+      margin: auto;
+      border: 1px solid var(--orangish);
+      border-radius: 7px;
+      padding: 30px 25px 10px 20px;
+      position: absolute;
+      background-color: white;
+      top: 50px;
+      left: 700px;
+    }
+
+    .calculations {
+        position: absolute;
+        left: 20px;
+        top: 420px;
+    }
+    
+    h1 {
+      padding: 30px 0 0 0;
+      font: 25px;
+      color: var(--orangish);
+      text-transform: uppercase;
+      margin: 0;
+    }
+    
+    p {
+      font: 13px;
+      color: var(--orangish);
+      text-shadow: var(--orangish) 0px 1px 5px;
+      margin-bottom: 30px;
+    }
+  
+    .logo {
+      text-decoration: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+  }
+  
+  .logo-text {
+      color: black;
+  }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="email"] {
+      width: 98%;
+      padding: 15px 0 15px 8px;
+      border-radius: 5px;
+      font-family: Rubik;
+      border: 2px solid var(--orangish);
+      margin-bottom: 10px;
+      color: black;
+      font-size: 15px;
+      border-left: 5px solid var(--orangish);
+    }
+    
+    input[type="submit"],
+    input[type="button"] {
+      width: 101.5%;
+      padding: 15px;
+      border-radius: 5px;
+      color: white;
+      text-transform: uppercase;
+      border: 1px solid #000;
+      -webkit-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+      -moz-box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.7);
+      font-family: Rubik;
+      font-weight: bolder;
+      background: var(--orangish);
+      cursor: pointer;
+    }
+  
+    
+    .name-help,
+    .email-help {
+      padding: 0px;
+      margin: 20px 0px 15px 0px;
+    }
+    
+    /* author */
+    .nemesis {
+      position: fixed;
+      right: 3%;
+      bottom: 0px;
+    }
+    

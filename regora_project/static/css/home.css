@@ -6,11 +6,40 @@
     margin: 0;
 }
 
+:root {
+    --reddish: #B70404;
+    --pinkish: #DB005B;
+    --orangish: #F79327;
+    --yellowish: #FFE569;
+  }
+
+
 main {
     width: 100vw;
     height: 100vh;
     position: relative;
     top: 64px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    background-image: linear-gradient(rgba(110, 110, 110, 0.5), rgba(73, 73, 73, 0.5)), url(path/to/your/image.jpg);
+      background-blend-mode: multiply;
+      background-size: cover;
+    /* gap: 50px; */
+}
+
+.features {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+main > h1 {
+    font-size: 50px;
 }
 
 .bg-img {
@@ -24,6 +53,8 @@ main {
 body {
     font-family: Rubik;
     overflow-x: hidden;
+    background-image: url('../images/hotel_bg.jpeg');
+    background-size: cover;
 }
 
 .navbar input[type="checkbox"],
@@ -41,8 +72,8 @@ body {
     box-shadow: 0px 5px 10px 0px #aaa;
     position: fixed;
     width: 100%;
-    background: black;
-    color: red;
+    background: var(--pinkish);
+    color: white;
     user-select: none;
     z-index: 100;
 }
@@ -61,6 +92,10 @@ body {
 .logo{
     order: 1;
     font-size: 2.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 
 .menu-items li{
@@ -74,7 +109,7 @@ body {
 }
 
 .navbar a{
-    color: red;
+    color: white;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease-in-out;

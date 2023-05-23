@@ -15,7 +15,7 @@
 }
 
 body {
-  background-color: var(--reddish);
+  background-color: var(--pinkish);
   width: 100%;
   min-height: 100vh;
 
@@ -66,7 +66,7 @@ input {
 
 h1 {
   text-align: center;
-  color: var(--reddish);
+  color: var(--pinkish);
 }
 h2 {
   text-align: center;
@@ -79,7 +79,7 @@ h2 {
 h2 span {
   text-decoration: underline;
   cursor: pointer;
-  color: var(--reddish);
+  color: var(--pinkish);
 }
 
 /*  Field */
@@ -97,7 +97,7 @@ h2 span {
   position: absolute;
   width: 0px;
   height: 2px;
-  background: var(--reddish);
+  background: var(--pinkish);
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -137,7 +137,7 @@ h2 span {
 
 /*  Button */
 button {
-  background: var(--reddish);
+  background: var(--pinkish);
   color: white;
   padding: 12px 0;
   font-size: 1.2rem;
@@ -146,5 +146,5 @@ button {
 }
 
 button:hover {
-  background: var(--reddish);
+  background: var(--pinkish);
 }

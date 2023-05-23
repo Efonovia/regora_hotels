@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,500&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <title>Navbar</title>
+    <title>Regora Hotels</title>
 </head>
 <body>
     <nav class="navbar">
@@ -27,15 +27,34 @@
                 <li><a href="#">Contact</a></li>
                 <li><a href="/adminlogin">Admin</a></li>
             </ul>
-            <h1 class="logo">Regora Hotels</h1>
+            <div class="logo">
+                <img width="50" height="50" src="{% static 'images/hotel_logo.png' %}" alt="">
+                <h1 class="logo">Regora Hotels</h1>
+            </div>
         </div>
     </nav>
 
-    <!-- <img src="{% static 'images/hotel_bg.jpeg' %}" alt=""> -->
-
-    <!-- <main style="background-size: cover; background-position: center; background-repeat: no-repeat; background-image: url('{% static 'images/hotel_bg.jpeg' %}');"> -->
     <main>
-
+        <section class="hero">
+            <h1 style="font-size: 40px;">Welcome to Regora Hotels</h1>
+            <p>Experience luxury and comfort at our hotel</p>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+              <h2>Spacious Rooms</h2>
+              <p>Our rooms are designed to provide maximum comfort and relaxation.</p>
+            </div>
+            <div class="feature">
+              <h2>World-class Services</h2>
+              <p>We offer a wide range of services to cater to your needs and preferences.</p>
+            </div>
+            <div class="feature">
+                <h2>Stunning Views</h2>
+                <p>Enjoy breathtaking views from our rooms and common areas.</p>
+            </div>
+        </section>
+        <a style="margin-top: -30px; text-decoration: none; background-color: #DB005B; padding: 12px; color: white; border-radius: 10px;" href="/signup" class="cta-button">Book Now</a>
     </main>
 </body>
 </html>
