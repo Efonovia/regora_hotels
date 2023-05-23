@@ -379,17 +379,6 @@ def adminUpdateGuest(request):
     return render(request, 'adminupdateguest.html', {'form': form, 'admin_id': admin_id, 'guest': target_guest})
 
 
-def adminDeleteGuest(request):
-    admin_id = request.GET.get('admin_id')
-    guest_id = request.GET.get('guest_id')
-
-    try:
-        guest = Guest.objects.get(id=guest_id)
-        guest.delete()
-        return redirect(f'/admindashboard/?admin_id={admin_id}')
-    except Guest.DoesNotExist:
-        # Handle the case when the guest doesn't exist
-        return HttpResponse("Guest not found")
 
 
 def adminCreateReservation(request):
